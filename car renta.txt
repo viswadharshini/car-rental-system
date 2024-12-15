@@ -1,0 +1,110 @@
+import java.util.Scanner;
+
+class Car {
+    String model;
+    int seats;
+    boolean isAvailable;
+    String availableDate;
+
+    Car(String model, int seats, boolean isAvailable, String availableDate) {
+        this.model = model;
+        this.seats = seats;
+        this.isAvailable = isAvailable;
+        this.availableDate = availableDate;
+    }
+
+    public String toString() {
+        return "Model: " + model + ", Seats: " + seats + ", Available: " + (isAvailable ? "Yes" : "No") + ", Date: " + availableDate;
+    }
+}
+
+public class CarRentalSystem {
+    static Car[] cars = {
+        new Car("Toyota Corolla", 5, true, "2024-12-01"),
+        new Car("Honda Civic", 5, true, "2024-12-05"),
+        new Car("Ford Explorer", 7, true, "2024-12-10")
+    };
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int choice;
+
+        while (true) {
+            System.out.println("\n--- Car Rental System ---");
+            System.out.println("1. View Available Cars");
+            System.out.println("2. Rent a Car");
+            System.out.println("3. Return a Car");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+            scanner.nextLine();  // Consume newline
+
+            switch (choice) {
+                case 1:
+                    viewAvailableCars();
+                    break;
+                case 2:
+                    rentCar(scanner);
+                    break;
+                case 3:
+                    returnCar(scanner);
+                    break;
+                case 4:
+                    System.out.println("Thank you for using the Car Rental System!");
+                    scanner.close();
+                    System.exit(0);
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    public static void viewAvailableCars() {
+        System.out.println("\nAvailable Cars:");
+        for (Car car : cars) {
+            if (car.isAvailable) {
+                System.out.println(car);
+            }
+        }
+    }
+
+    public static void rentCar(Scanner scanner) {
+        System.out.print("\nEnter the car model you want to rent: ");
+        String model = scanner.nextLine();
+        System.out.print("Enter the number of seats you need: ");
+        int seatsNeeded = scanner.nextInt();
+        scanner.nextLine();  // Consume newline
+
+        for (Car car : cars) {
+            if (car.model.equalsIgnoreCase(model) && car.seats == seatsNeeded && car.isAvailable) {
+                System.out.println("Car available: " + car.model + " with " + car.seats + " seats.");
+                System.out.print("Do you want to rent this car? (yes/no): ");
+                String confirm = scanner.nextLine();
+                if (confirm.equalsIgnoreCase("yes")) {
+                    System.out.print("Enter the rental date (yyyy-MM-dd): ");
+                    String date = scanner.nextLine();
+                    if (date.equals(car.availableDate)) {
+                        car.isAvailable = false;
+                        System.out.println("Car rented successfully!");
+                    } else {
+                        System.out.println("The car is not available on the chosen date.");
+                    }
+                }
+                return;
+            }
+        }
+        System.out.println("Car not found or unavailable.");
+    }
+
+    public static void returnCar(Scanner scanner) {
+        System.out.print("\nEnter the car model you want to return: ");
+        String model = scanner.nextLine();
+
+        for (Car car : cars) {
+            if (car.model.equalsIgnoreCase(model) && !car.isAvailable) {
+                car.isAvailable = true;
+                System.out.println("Car returned successfully!");
+                return;
+            }
+        }
+        System.out.println("Car model not found or it was not rented.");}}
